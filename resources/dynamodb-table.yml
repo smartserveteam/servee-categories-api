@@ -8,7 +8,7 @@ Resources:
           AttributeType: S
       KeySchema:
         - AttributeName: categoryId
-          KeyType: RANGE
+          KeyType: HASH
       # Set the capacity based on the stage
       ProvisionedThroughput:
         ReadCapacityUnits: ${self:custom.tableThroughput}
