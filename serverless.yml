@@ -1,4 +1,4 @@
-service: notes-app-api
+service: servee-categories-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -15,8 +15,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: prod
-  region: us-east-1
+  stage: dev
+  region: eu-central-1
 
   # 'iamRoleStatement' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -34,7 +34,7 @@ provider:
 
 functions:
   # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /notes
+  # - path: url path is /categories
   # - method: POST request
   # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
   #     domain api call
@@ -43,55 +43,55 @@ functions:
     handler: create.main
     events:
       - http:
-          path: notes
+          path: categories
           method: post
           cors: true
           authorizer: aws_iam
 
   get:
     # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /notes/{id}
+    # - path: url path is /categories/{id}
     # - method: GET request
     handler: get.main
     events:
       - http:
-          path: notes/{id}
+          path: categories/{id}
           method: get
           cors: true
           authorizer: aws_iam
 
   list:
     # Defines an HTTP API endpoint that calls the main function in list.js
-    # - path: url path is /notes
+    # - path: url path is /categories
     # - method: GET request
     handler: list.main
     events:
       - http:
-          path: notes
+          path: categories
           method: get
           cors: true
           authorizer: aws_iam
 
   update:
     # Defines an HTTP API endpoint that calls the main function in update.js
-    # - path: url path is /notes/{id}
+    # - path: url path is /categories/{id}
     # - method: PUT request
     handler: update.main
     events:
       - http:
-          path: notes/{id}
+          path: categories/{id}
           method: put
           cors: true
           authorizer: aws_iam
 
   delete:
     # Defines an HTTP API endpoint that calls the main function in delete.js
-    # - path: url path is /notes/{id}
+    # - path: url path is /categories/{id}
     # - method: DELETE request
     handler: delete.main
     events:
       - http:
-          path: notes/{id}
+          path: categories/{id}
           method: delete
           cors: true
           authorizer: aws_iam
