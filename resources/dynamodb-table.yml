@@ -1,5 +1,5 @@
 Resources:
-  NotesTable:
+  CategoriesTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: ${self:custom.tableName}
