@@ -12,7 +12,6 @@ custom:
   # Set the table name here so we can use it while testing locally
   tableName: ${self:custom.stage}-categories
   # Set our DynamoDB throughput for prod and all other non-prod stages.
-  # Set throughput higher for prod
   tableThroughputs:
     prod: 5
     default: 1
