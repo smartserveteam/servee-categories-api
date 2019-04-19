@@ -6,18 +6,15 @@ export async function main(event, context) {
   const params = {
     TableName: process.env.tableName,
     // 'Key' defines the partition key and sort key of the item to be updated
-    // - 'userId': Identity Pool identity id of the authenticated user
-    // - 'noteId': path parameter
+    // - 'categoryId': path parameter
     Key: {
-      userId: event.requestContext.identity.cognitoIdentityId,
-      noteId: event.pathParameters.id
+      categoryId: event.pathParameters.id
     },
     // 'UpdateExpression' defines the attributes to be updated
     // 'ExpressionAttributeValues' defines the value in the update expression
-    UpdateExpression: "SET content = :content, attachment = :attachment",
+    UpdateExpression: "SET label = :label",
     ExpressionAttributeValues: {
-      ":attachment": data.attachment || null,
-      ":content": data.content || null
+      ":label": data.label || null
     },
     ReturnValues: "ALL_NEW"
   };
@@ -26,6 +23,6 @@ export async function main(event, context) {
     const result = await dynamoDbLib.call("update", params);
     return success({ status: true });
   } catch (e) {
-    return failure({ status: false });
+    return failure({ status: false, error: e });
   }
 }
