@@ -1,4 +1,4 @@
-service: servee-categories-api
+service: servee-skills-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -9,8 +9,6 @@ custom:
   # Our stage is based on what is passed in when running serverless
   # commands. Or fallsback to what we have set in the provider section.
   stage: ${opt:stage, self:provider.stage}
-  # Set the table name here so we can use it while testing locally
-  tableName: ${self:custom.stage}-categories
   # Set our DynamoDB throughput for prod and all other non-prod stages.
   tableThroughputs:
     prod: 5
@@ -30,7 +28,7 @@ provider:
   # These environment variables are made available to our functions
   # under process.env.
   environment:
-    tableName: ${self:custom.tableName}
+    DYNAMODB_TABLE: ${self:custom.stage}-UserDepartments
 
   iamRoleStatements:
     - Effect: Allow
@@ -42,72 +40,29 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      # Restrict our IAM role permissions to
-      # the specific table for the stage
-      Resource:
-        - "Fn::GetAtt": [ CategoriesTable, Arn ]
+      Resource: "arn:aws:dynamodb:eu-central-1:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /categories
-  # - method: POST request
-  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
-  #     domain api call
-  # - authorizer: authenticate using the AWS IAM role
-  create:
-    handler: create.main
-    events:
-      - http:
-          path: categories
-          method: post
-          cors: true
-          authorizer: aws_iam
-
-  get:
-    # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /categories/{id}
-    # - method: GET request
-    handler: get.main
-    events:
-      - http:
-          path: categories/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-
   list:
     # Defines an HTTP API endpoint that calls the main function in list.js
-    # - path: url path is /categories
+    # - path: url path is /skills
     # - method: GET request
     handler: list.main
     events:
       - http:
-          path: categories
+          path: skills
           method: get
           cors: true
           authorizer: aws_iam
-
-  update:
-    # Defines an HTTP API endpoint that calls the main function in update.js
-    # - path: url path is /categories/{id}
-    # - method: PUT request
-    handler: update.main
+  get:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /skills/{id}
+    # - method: GET request
+    handler: get.main
     events:
       - http:
-          path: categories/{id}
-          method: put
-          cors: true
-          authorizer: aws_iam
-
-  delete:
-    # Defines an HTTP API endpoint that calls the main function in delete.js
-    # - path: url path is /categories/{id}
-    # - method: DELETE request
-    handler: delete.main
-    events:
-      - http:
-          path: categories/{id}
-          method: delete
+          path: skills/{id}
+          method: get
           cors: true
           authorizer: aws_iam
 
@@ -115,11 +70,6 @@ functions:
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
-  # DynamoDB
-  - ${file(resources/dynamodb-table.yml)}
-  # S3
-  - ${file(resources/s3-bucket.yml)}
   # Cognito
   - ${file(resources/cognito-user-pool.yml)}
   - ${file(resources/cognito-identity-pool.yml)}
-
